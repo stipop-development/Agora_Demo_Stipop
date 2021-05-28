@@ -1,5 +1,6 @@
 import { ILocalVideoTrack, IRemoteVideoTrack, ILocalAudioTrack, IRemoteAudioTrack } from "agora-rtc-sdk-ng";
 import React, { useRef, useEffect, useState } from "react";
+import Draggable from "react-draggable";
 import { ReactionButtonWrapper, ReactionsWrapper, ReactionsWrapper2 } from "./MediaPlayer.styles";
 
 export interface VideoPlayerProps {
@@ -75,9 +76,16 @@ const MediaPlayer = (props: VideoPlayerProps) => {
 
   return (
     <>
-      <div ref={container}  className="video-player" style={{ width: "320px", height: "240px"}}>
+      <div ref={container}  className="video-player" style={{ width: "500px", height: "500px"}}>
+        <Draggable
+        >
+          <div style={{ position: 'absolute', zIndex: 1}}>
+            <img style={{ width: '100px', height: '100px' }} src={sticker.length > 0 && sticker[0].stickerImg} />
+          </div>
+        </Draggable>        
       </div>
       <ReactionsWrapper>
+
         <ReactionButtonWrapper onClick={() => {
             setTransparent(100);
             const wayUp = between(-200, -220);

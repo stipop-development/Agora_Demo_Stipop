@@ -16,6 +16,7 @@
     "framer-motion": "^4.1.15",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-draggable": "^4.4.3",
     "react-scripts": "3.4.1",
     "styled-components": "^5.3.0",
     "typescript": "^3.7.5"
