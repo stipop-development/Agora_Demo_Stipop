@@ -5,7 +5,7 @@ import { motion, transform } from "framer-motion";
 export const ReactionsWrapper = styled.div`
 display: flex;
 flex-direction: row;
-width: 15%;
+width: 9.5%;
 height: 30px;
 left: 480px;
 top: 7px;

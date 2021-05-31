@@ -3,6 +3,16 @@ import React, { useRef, useEffect, useState } from "react";
 import Draggable from "react-draggable";
 import { ReactionButtonWrapper, ReactionsWrapper, ReactionsWrapper2 } from "./MediaPlayer.styles";
 
+import hahaha from '../images/hahaha.png';
+import angry from '../images/angry.png';
+import hi from '../images/hi.png';
+import lov from '../images/love.png';
+import sa from '../images/sad.png';
+
+import { Input } from "./input";
+import axios from 'axios';
+import { createLoopVariable } from "typescript";
+
 export interface VideoPlayerProps {
   videoTrack: ILocalVideoTrack | IRemoteVideoTrack | undefined;
   audioTrack: ILocalAudioTrack | IRemoteAudioTrack | undefined;
@@ -29,6 +39,11 @@ const MediaPlayer = (props: VideoPlayerProps) => {
   const [wiggle3, setWiggle3] = useState(0);
   const [wiggle4, setWiggle4] = useState(0);
   const [wiggle5, setWiggle5] = useState(0);
+
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [stickers, setStickers] = useState<any[]>([]);
+  const [float, setFloat] = useState('');
 
   const config = {
     headers: {
@@ -74,105 +89,181 @@ const MediaPlayer = (props: VideoPlayerProps) => {
     Math.random() * (max - min) + min
   )
 
+  const queryHandler = async (event) => {
+    setQuery(event.target.value);
+    console.log("Query: ", query);
+
+    const response = await axios(`/v1/search?userId=123&pageNumber=1&searchText=${query}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'apiKey': 'e0fb71a7418582285972d33562218343',
+        }
+    });
+    const results = response.data.body.stickerList;
+    console.log(results);
+    setStickers(results);
+    return results;
+  }
+
   return (
     <>
       <div ref={container}  className="video-player" style={{ width: "500px", height: "500px"}}>
-        <Draggable
-        >
-          <div style={{ position: 'absolute', zIndex: 1}}>
-            <img style={{ width: '100px', height: '100px' }} src={sticker.length > 0 && sticker[0].stickerImg} />
-          </div>
-        </Draggable>        
+        { float === '' ?
+          null
+          :
+          <Draggable
+            bounds={{top:-23, left:-15, right: 410, bottom: 405}}
+          >
+            <div style={{ position: 'absolute', zIndex: 1}}>
+              <img style={{ width: '100px', height: '100px' }} draggable={false} src={float} />
+            </div>
+          </Draggable>
+      }        
       </div>
-      <ReactionsWrapper>
+      <div>
+        <div style={{display: 'flex'}}>
+          <ReactionsWrapper>
+            <ReactionButtonWrapper onClick={() => {
+                setTransparent(100);
+                const wayUp = between(-200, -220);
+                const isFull = between(1, 10);
+                const leftRight = between(-20, 20)
 
-        <ReactionButtonWrapper onClick={() => {
-            setTransparent(100);
-            const wayUp = between(-200, -220);
-            const isFull = between(1, 10);
-            const leftRight = between(-20, 20)
+                setWiggle(leftRight);
+                setFull(isFull);
+                setLove(wayUp);
+              }} src={lov}
+            />
+            <ReactionButtonWrapper  onClick={() => {
+                const wayUp = between(-200, -220);
+                const isFull = between(1, 10);
+                const leftRight = between(-20, 20)
+                setWiggle2(leftRight);
+                setFull2(isFull);
+                setLaugh(wayUp);
+              }} src={hi}
+            />
+            <ReactionButtonWrapper onClick={() => {
+                const wayUp = between(-200, -220);
+                const isFull = between(1, 10);
+                const leftRight = between(-20, 20)
+                setWiggle3(leftRight);
+                setFull3(isFull);
+                setThumbUp(wayUp);
+              }}
+              src={hahaha}
+            />
+            <ReactionButtonWrapper onClick={() => {
+                const wayUp = between(-200, -220);
+                const isFull = between(1, 10);
+                const leftRight = between(-20, 20)
+                setWiggle4(leftRight);
+                setFull4(isFull);
+                setMad(wayUp);
+              }}
+              src={angry}
+            />
+            <ReactionButtonWrapper onClick={() => {
+                const wayUp = between(-200, -220);
+                const isFull = between(1, 10);
+                const leftRight = between(-20, 20)
+                setWiggle5(leftRight);
+                setFull5(isFull);
+                setSad(wayUp);
+              }}
+              src={sa}
+            />
+          </ReactionsWrapper>
+          <div
+            onClick={() => setOpen(true)} 
+            style={{ width: '20px', height: '20px', backgroundColor: 'black', marginTop: '12px', marginLeft: '10px'}}
+          >
+            {open ? 
+              <div
+                style={{
+                  marginLeft: '40px', 
+                  width: '430px',
+                  maxWidth: 'calc(100vw - 50px)',
+                  padding: '1',
+                  borderRadius: 'light',
+                  border: 'solid'
+                }}
+              >
+                <form
+                >
+                  <input 
+                    style={{ width: '400px', marginLeft: '10px', marginTop: '10px'}}
+                    type="text"
+                    placeholder="search for stickers!"
+                    onChange={queryHandler}
+                  />
+                </form>
+                {query ? 
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+                      {stickers &&
+                          stickers.map((sticker, index) => {
+                              return (
+                                  <div key={sticker.stickerId}>
+                                      <img src={sticker.stickerImg} onClick={() => setFloat(sticker.stickerImg)} style={{ width: '130px', height: '150px'}} />
+                                  </div>
+                              );                         
+                          })
+                          
+                      }
+                  </div>
+                  :
+                  <>
+                    <div style={{ textAlign: 'center', marginTop: '35px'}}>
+                        <img style={{width: '250px', height: '250px' }}src="https://img.stipop.io/2019/5/30/1559203142542_MOE_006.gif" />
+                    </div>
+                    <div style={{ textAlign: 'center', fontWeight: 'bold', marginTop: '5px'}}>Search for Stickers!</div>
+                  </> 
+                }
+              </div>
+              :
+              null
+            }
+          </div>
+        </div>
+        <ReactionsWrapper2>
+          <ReactionButtonWrapper
+            animate={{x: [0, wiggle, 0, wiggle, 0, wiggle, 0, wiggle], y: [0, love], opacity: [0, full, 0]}}
+            drag="x"
+            dragConstraints={{ left: -100, right: 100 }}
+            transition={{ ease: "easeOut", duration: 1.5}}  
+            src={lov} 
+          /> 
+          <ReactionButtonWrapper 
+            animate={{x: [0, wiggle2, 0, wiggle2, 0, wiggle2, 0, wiggle2], y: [0, laugh], opacity: [full2, 0] }} 
+            transition={{ ease: "easeOut", duration: 1.5}}  
 
-            setWiggle(leftRight);
-            setFull(isFull);
-            setLove(wayUp);
-          }} src={sticker.length > 0 && sticker[0].stickerImg}
-        />
-        <ReactionButtonWrapper  onClick={() => {
-            const wayUp = between(-200, -220);
-            const isFull = between(1, 10);
-            const leftRight = between(-20, 20)
-            setWiggle2(leftRight);
-            setFull2(isFull);
-            setLaugh(wayUp);
-          }}src={sticker.length > 0 && sticker[1].stickerImg}
-        />
-        <ReactionButtonWrapper onClick={() => {
-            const wayUp = between(-200, -220);
-            const isFull = between(1, 10);
-            const leftRight = between(-20, 20)
-            setWiggle3(leftRight);
-            setFull3(isFull);
-            setThumbUp(wayUp);
-          }}
-          src={sticker.length > 0 && sticker[2].stickerImg}
-        />
-        <ReactionButtonWrapper onClick={() => {
-            const wayUp = between(-200, -220);
-            const isFull = between(1, 10);
-            const leftRight = between(-20, 20)
-            setWiggle4(leftRight);
-            setFull4(isFull);
-            setMad(wayUp);
-          }}
-          src={sticker.length > 0 && sticker[3].stickerImg}
-        />
-        <ReactionButtonWrapper onClick={() => {
-            const wayUp = between(-200, -220);
-            const isFull = between(1, 10);
-            const leftRight = between(-20, 20)
-            setWiggle5(leftRight);
-            setFull5(isFull);
-            setSad(wayUp);
-          }}
-          src={sticker.length > 0 && sticker[4].stickerImg}
-        />
-      </ReactionsWrapper>
-      <ReactionsWrapper2>
-        <ReactionButtonWrapper
-          animate={{x: [0, wiggle, 0, wiggle, 0, wiggle, 0, wiggle], y: [0, love], opacity: [0, full, 0]}}
-          drag="x"
-          dragConstraints={{ left: -100, right: 100 }}
-          transition={{ ease: "easeOut", duration: 1.5}}  
-          src={sticker.length > 0 && sticker[0].stickerImg} 
-        /> 
-        <ReactionButtonWrapper 
-          animate={{x: [0, wiggle2, 0, wiggle2, 0, wiggle2, 0, wiggle2], y: [0, laugh], opacity: [full2, 0] }} 
-          transition={{ ease: "easeOut", duration: 1.5}}  
+            src={hi} 
+          />
 
-          src={sticker.length > 0 && sticker[1].stickerImg} 
-        />
+          <ReactionButtonWrapper 
+            animate={{x: [0, wiggle3, 0, wiggle3, 0, wiggle3, 0, wiggle3], y: [0, thumbUp], opacity: [full3, 0] }}
+            transition={{ ease: "easeOut", duration: 1.5}}  
+        
+            src={hahaha} 
+          />
 
-        <ReactionButtonWrapper 
-          animate={{x: [0, wiggle3, 0, wiggle3, 0, wiggle3, 0, wiggle3], y: [0, thumbUp], opacity: [full3, 0] }}
-          transition={{ ease: "easeOut", duration: 1.5}}  
-      
-          src={sticker.length > 0 && sticker[2].stickerImg} 
-        />
+          <ReactionButtonWrapper 
+            animate={{x: [0, wiggle4, 0, wiggle4, 0, wiggle4, 0, wiggle4], y: [0, mad], opacity: [full4, 0]}} 
+            transition={{ ease: "easeOut", duration: 1.5}}  
 
-        <ReactionButtonWrapper 
-          animate={{x: [0, wiggle4, 0, wiggle4, 0, wiggle4, 0, wiggle4], y: [0, mad], opacity: [full4, 0]}} 
-          transition={{ ease: "easeOut", duration: 1.5}}  
+            src={angry} 
+          />
 
-          src={sticker.length > 0 && sticker[3].stickerImg} 
-        />
-
-        <ReactionButtonWrapper 
-          animate={{x: [0, wiggle5, 0, wiggle5, 0, wiggle5, 0, wiggle5], y: [0, sad], opacity: [full5, 0] }}
-          transition={{ ease: "easeOut", duration: 1.5}}  
-      
-          src={sticker.length > 0 && sticker[4].stickerImg} 
-        />
-      </ReactionsWrapper2>
+          <ReactionButtonWrapper 
+            animate={{x: [0, wiggle5, 0, wiggle5, 0, wiggle5, 0, wiggle5], y: [0, sad], opacity: [full5, 0] }}
+            transition={{ ease: "easeOut", duration: 1.5}}  
+        
+            src={sa} 
+          />
+        </ReactionsWrapper2>
+      </div>
     </>
   );
 }

@@ -2,7 +2,7 @@
   "name": "react-demo",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://camera.stipop.io",
+  "proxy": "https://messenger.stipop.io",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -13,6 +13,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/styled-components": "^5.1.9",
     "agora-rtc-sdk-ng": "^4.0.1",
+    "axios": "^0.21.1",
     "framer-motion": "^4.1.15",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
